@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>The Kochava SDK allows advertisers to integrate a single SDK to leverage the hundreds of ad network and publisher partners via Kochava. This limits the number 3rd party SDKs required to run a successful UA strategy and greatly reduces complexity during update cycles.  Find documentation for other SDKs here:</p>
+<p><img src="http://api.stathat.com/c?ukey=NDI3NiCv-aschSWiiehSq19ub62I&amp;key=owJ3U6ORimMevMgbotCQMyBaT3Bk&amp;count=1" style="display: none;" width="1" height="1">
+<br>
+</p>
+<h3 style="text-align: center;">
+<a href="http://kochava.freshdesk.com/support/solutions/articles/1000059874-ios-sdk">iOS</a> :: <a href="http://kochava.freshdesk.com/support/solutions/articles/1000069982-android-sdk">Android</a> :: <a href="http://kochava.freshdesk.com/support/solutions/articles/1000069986-windows-phone-sdk">Windows</a> :: <a href="http://kochava.freshdesk.com/support/solutions/articles/1000070019-unity-sdk">Unity</a> :: <a href="http://kochava.freshdesk.com/support/solutions/articles/1000069987-adobe-air-sdk">Adobe Air</a>
+</h3>
+<hr>
+<p><br>
+NOTE: Around April 26, 2014, Apple modified their automatic code validation surrounding the gathering of the Advertising Identifier (IDFA). The following error indicates a problem with this validation process:
+</p>
+<blockquote>“Improper advertising identifier [IDFA] usage. Your app contains the Advertising Identifier [IDFA] API but your app is not respecting the Limit Ad Tracking setting in iOS.”</blockquote>
+<p><b>There have been no instances of the Kochava SDK triggering this error.</b>
+Kochava’s SDK’s IDFA usage complies with Apple’s guidelines, and Kochava adheres to a user's Limit Ad Tracking setting. Also, Kochava periodically submits apps with our library integrated to ensure that our SDK passes Apple validation.<br> <br>
+If this error message appears when you try to submit an app to the app store:<br> <br>Alert your Account Manager that you received it, and provide the following information:
+</p>
+<ul style="margin-left: 15px;">
+<li>Version of Kochava’s SDK that you are using</li>
+<li>Whether or not you checked YES to answer the question, Does this app use the Advertiser Identifier (IDFA)?
+</li>
+<li>Whether or not you checked any of the 3 boxes under: This app uses the Advertising Identifier to (select all that apply):
+</li>
+<li>What other tracking/conversion SDKs, if any, you are using in your app</li>
+</ul>
+<p> From this information, we can trouble-shoot. </p>
+<p><br></p>
+<p>Here's a sample screenshot:</p>
+<p></p>
+<p><img src="http://cdn.freshdesk.com/data/helpdesk/attachments/production/1009653823/original/idfa.png?1413487421" class="inline-image" data-id="1009653823" style="cursor: default;"></p>
+<p><img src="http://api.stathat.com/c?ukey=NDI3NiCv-aschSWiiehSq19ub62I&amp;key=RRRK_WQNeuCzXF8Ns54x6CAxaE1B&amp;count=1" style="display: none;" width="1" height="1">
+<br><br>
+</p>
+<p></p>
+<hr>
+<ul>
+<li><a href="#inte" style="font-size: medium;">Integrating the SDK</a></li>
+<li><a href="#call" style="font-size: medium;">Calling the Constructor</a></li>
+<li><a href="#togcon" style="font-size: medium;">Toggling Console Logging</a></li>
+<li><a href="#toglim" style="font-size: medium;">Toggling Limit-Ad-Tracking</a></li>
+<li><a href="#caleve" style="font-size: medium;">Calling Event Methods</a></li>
+<li><a href="#senspa" style="font-size: medium;">Sending Spatial Events</a></li>
+<li><a href="#iden" style="font-size: medium;">Identity Linking</a></li>
+<li><a href="#deep" style="font-size: medium;">Deep Linking</a></li>
+<li><a href="#attr" style="font-size: medium;">Attribution Data Request</a></li>
+<li><a href="#ibeac" style="font-size: medium;">iBeacon Detection (optional)</a></li>
+<li><a href="#swift" style="font-size: medium;">Swift Support</a></li>
+
+</ul>
+<p><img src="http://api.stathat.com/c?ukey=NDI3NiCv-aschSWiiehSq19ub62I&amp;key=RRRK_WQNeuCzXF8Ns54x6CAxaE1B&amp;count=1" style="display: none;" width="1" height="1">
+<br>
+</p>
+<hr>
+<h1><a id="inte" style="size:20px;">Integrating the SDK</a></h1>
+<div>
+  <br>
+    Make the following additions and project settings changes to your project to use the Kochava Event Tracking Library.
+    <br><br>
+    1.  From the attached zip, copy the following files into your project’s folder using Finder:
+</div>
+<div>
+<p> </p>
+<pre rel="highlighter" code-brush="text">libTrackAndAd.a
+TrackAndAd.h</pre>
+<p> </p>  <p>2.  Right-clicking on your project in Xcode, select “Add Files to (project name)” and add TrackAndAd.h to your project.<br> <br>3.  Click on the project name at the top of the Project Navigator in Xcode.  Then select Targets on the pane to the right, then “Build Phases” across the top.  Click the drop-down titled “Link Binary With Libraries”.  If not already listed, using the plus sign, add the following frameworks and libraries.  The first several will be found in the main list which appears.  The ones at the bottom of the list you will have to add via the “Add Other...” button and locate them in the Kochava Tracker files you downloaded.<br> <br>-  SystemConfiguration.framework<br>-  UIKit.framework<br>-  Foundation.framework<br></p>
+<p>-  AdSupport.framework</p>
+<p>-  iAd.framework</p>
+<p>-  CoreLocation.framework<br>-  libTrackAndAd.a<br> <br><br>4.  In your AppDelegate’s header file, add the following:<br>     </p>
+<pre rel="highlighter" code-brush="objc">#import "TrackAndAd.h"</pre>
+<p>    </p>
+<p> </p>
+<p>Within the @interface section: </p>
+<p> </p>
+<pre rel="highlighter" code-brush="cpp">KochavaTracker *kochavaTracker;</pre>
+<p>  <br></p>
+<p> <br>Under the @interface section: </p>
+<p> </p>
+<pre rel="highlighter" code-brush="cpp">@property(readonly) KochavaTracker *kochavaTracker;</pre>
+<p>  <br></p>
+<p><br><br></p>
+  <p>5. In your AppDelegate’s source file, add the following:<br> <br>Under @implementation:  </p>
+<pre rel="highlighter" code-brush="cpp">@synthesize kochavaTracker;</pre>
+<p>  </p>
+<p><br></p>
+<p>In didFinishLaunchingWithOptions:  </p>
+<pre rel="highlighter" code-brush="cpp">kochavaTracker = [[KochavaTracker alloc] initKochavaWithParams:dictionary of parameters];</pre>
+<p>  </p>
+<p>(note this must be prior to “self.window.rootViewController = self.viewController;”, or similar)<br> <br>In your dealloc method:  </p>
+<pre rel="highlighter" code-brush="cpp">[kochavaTracker release];</pre>
+<p> </p>
+<p><br>
+  <a href="#top">Back to Top</a> </p>
+  <hr>
+<br><br>
+</div>
+<h1><a id="call">Calling the Constructor</a></h1>
+<p><br></p>
+<p>By calling the Kochava Constructor, you have completed the basic integration with Kochava.  The Constructor should be located in the logic of your application where things first startup. </p>
+<p><br>Argument:  An initialization dictionary
+<br>The initialization dictionary must contain a <a href="http://support.kochava.com/discussions/topics/1000050127/page/last/#post_1000092730" target="_blank">Kochava App Id</a>.  All other information is optional.  Here is an example of an initialization dictionary:</p>
+<p>Method: initKochavaWithParams<br></p>
+<p><br></p>
+<p>   </p>
+<p></p>
+<p></p>
+<p></p>
+<pre rel="highlighter" code-brush="cpp">NSDictionary *initDict = [NSDictionary dictionaryWithObjectsAndKeys:
+@"myKochavaAppId", @"kochavaAppId",
+@"yen", @"currency", // optional - usd is default
+@"0", @"limitAdTracking", // optional - 0 is default
+@"0", @"enableLogging", // optional - 0 is default
+identityLinkDictionary, @"identityLink", // optional
+nil];
+kochavaTracker = [[KochavaTracker alloc] initKochavaWithParams:initDict];</pre>
+<p>   </p>
+<p><br>More details on each of the boolean values above can be found in their individual setter method documentation below.<br><br>The identityLink dictionary may contain one or two key/value pairs of strings and may be used to associate information with the device.  For example, you could associate an internal userid which you want to connect to a user's service identifier.  There is more detailed information below under Identity Linking, which can be called at any time.<br><br>You might create your identityLinkDictionary, to be used in initKochavaWithParams, as follows:   </p>
+<pre rel="highlighter" code-brush="cpp">NSDictionary *identityLinkDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+@"ABCD1234", @"myInternalUserID",
+@"1235467890123456", @"service ID",
+nil];</pre>
+<p>   <br></p>
+<p><br>When this method is called, the Kochava Tracker reports device and app information to Kochava, should those values be different than the last time this information was reported.<br> <br>Data sent by this method:<br>- Device type (iPad, iPhone iPod touch)<br>-  iOS name and version (eg: iPhone OS 4.3.5)<br>-  Application version (eg: 1.2)<br>- Your Kochava application ID<br>- The currency in which your application functions (will default to USD)<br>- If you'd like to enable console logging of Kochava library events (will default to NO)<br>- Limiting app level ad tracking* (is NO by default)
+</p>
+<p><br>*If you wish to limit ad tracking at the application level, with respect to Kochava conversions, you can turn off ad tracking when you initialize the Kochava library or by an individual method for the purpose of changing the limit ad tracking state, which will be off by default (user opts-in to advertising).</p>
+<p><br>(DEPRECATED)<br>Method: initWithKochavaAppId<br>Arguments:  kochavaAppId, currency (optional), enableLogging (optional), limitAdTracking (optional), isNewUser (optional)<br><br>If you are using the initWithKochavaAppId method currently, please start using initKochavaWithParams instead.  If you have questions about initWithKochavaAppId, please forward them to us and we'll be happy to assist you.
+</p>
+<p><br> </p>
+<p>With each installation, Kochava gathers device information and sends it to the Kochava servers for analysis across each installation.  Further, this information is ONLY sent in the following situations:
+</p>
+<ul style="margin-left: 15px;">
+<li>​Upon initial installation</li>
+<li>When the application is upgraded</li>
+<li>When the operating system version is upgraded on the host device</li>
+</ul>
+<p>By limiting the times that this information is sent, Kochava is optimizing performance of the SDK and only sending information when changes are made.</p>
+<h3 style="margin-bottom: 3px; font-size: 22px;"><div>
+<p><br>Note that Kochava persists data in NSUserDefaults.  All keys used are prefaced with com.kochava.KochavaTracker.  You should be careful not to clear these keys or the SDK may perform unpredictably.</p>
+<p><br><a href="#top">Back to Top</a> </p>
+<hr>
+<br><br>
+</div></h3>
+<h1><a id="togcon">Toggling Console Logging</a></h1>
+<p>
+Console logging will be off by default, unless enabled via either the initial command or the enableConsoleLogging<br>method, which takes only a bool as an argument.  If you had enabled console logging when you initialized the library, you can also disable it via this method by passing NO to it.
+
+</p>
+<p> </p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<pre rel="highlighter" code-brush="text">(void)someMethodInMyApp { 
+MyAppDelegate *delegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+[delegate.kochavaTracker enableConsoleLogging:YES]; // or NO to turn off 
+}</pre>
+<p> </p>
+<p><br><br><a href="#top">Back to Top</a> </p>
+<hr>
+<p>
+	<br><br>
+</p>
+<h1>
+<a id="toglim">Toggling Limit-Ad-Tracking</a><br>
+</h1>
+<div>
+
+<p>Ad tracking will be on by default, unless disabled via either the initial command or the setLimitAdTracking method, which takes only a bool as an argument.  </p>
+<pre rel="highlighter" code-brush="text">(void)someMethodInMyApp {
+
+...
+
+MyAppDelegate *delegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+[delegate.kochavaTracker setLimitAdTracking:YES]; // or NO to remove limiting (opt-in)
+...
+
+}</pre>
+<p>  </p>
+</div>
+<p><br><br><a href="#top">Back to Top</a> </p>
+<hr>
+
+<h1><a id="caleve">Calling Event Methods</a></h1>
+<p>Sending Kochava post-install events is not a requirement.  To track installation information, you must ONLY call the constructor.  While this is true, many advertisers want to understand and correlate the relationship between conversion and attribution source information with post-install behaviors.  This can only be done by tracking post-install events.<br> </p>
+<p>Once the Constructor is called, the Kochava event tracking method can be called from anywhere within the application. Events will be coupled with the information sent by the Constructor to report events, based on user device and application information.</p>
+<p><br>Events are sent immediately to Kochava servers but queued, should the device not have connectivity.</p>
+<p><br></p>
+<p>PLEASE NOTE: Event names may not be prepended with an underscore, as that convention is reserved for Kochava system events. (i.e. _INSTALL)</p>
+<p><br>No event pre-registration is required.  To instrument an event, simply send an event name via the eventTitle parameter.  Optionally, you can also send an eventValue.</p>
+<p><br>Uses of the the optional eventValue parameter could be any of the following:<br>- Gather in-app purchase information that can be used for LTV calculation.<br>- A JSON formatted string, in which you want to track several data points.<br>- Just some other piece of information, paired with the eventTitle.</p>
+<p><br>If the string passed in eventValue is all numeric (and may include a decimal point), Kochava will automatically sum the amounts passed in eventValue for the same eventTitle.  For example, if you sent the purchase amount of in-app purchases in eventValue and named eventTitle “IAP - Purchase Price”, Kochava would add up all the purchase amounts for you and present them as a total for “IAP - Purchase Price”.</p>
+<p><br>Regardless of what is passed in eventValue, Kochava’s user dashboard will let you access all the data passed in eventValue for any eventTitle, and present a count of all times trackEvent passed any given eventTitle.  Note that if you pass a string of JSON represented data, only the root level (no nested chunks) is stored.  Also there exists a limit of 75 total characters passed in eventValue.</p>
+<p><br>Prototype: <br></p>
+<p></p>
+<p></p>
+<p></p>
+<pre rel="highlighter" code-brush="html">(void) trackEvent:(NSString*)eventTitle :(NSString*)eventValue;</pre>
+<p> </p>
+<p><br><em>Sample Code</em><br><br>You can call the tracking method from anywhere in your application.  It is called by accessing it through the application’s delegate.  Note that you’ll need to import your app delegate’s header file at the top of the file from which you call this method.
+</p>
+<p><br>Note that in the example below, “Detail View” and “product list” are just examples for a particular scenario.  Say an app has a bunch of items listed in a UITableView (like the Settings app on the iPhone).  The user taps on one of the items in the list to go to a more detailed view.  So the you want to log that the user went to the more detailed view of the product list (which was the item on the table table they tapped on).  You might sent this pair of events to indicate the user went to a "Detail View" of the "product list".</p>
+<p><br></p>
+<p> </p>
+<pre rel="highlighter" code-brush="objc">- (void)someMethodInMyApp {
+        
+           ...
+ 
+           MyAppDelegate *delegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+           [delegate.kochavaTracker trackEvent:@”Detail View”:@”product list”];
+ 
+           ...
+ 
+}</pre>
+<p> </p>
+<p><br><br><a href="#top">Back to Top</a> </p>
+<hr>
+<p>
+<br><br>
+</p>
+<h1><a id="senspa" target="">Sending Spatial Events</a></h1>
+<div>
+Spatial events let you send a title and an x, y, and z coordinate to our server for visualizing your data.<br><br>You may call the spatialEvent at any time.<br> 
+
+<p> </p>
+<pre rel="highlighter" code-brush="cpp">(void)someMethodInMyApp {
+...
+MyAppDelegate *delegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+[delegate.kochavaTracker spatialEvent:@”my spatial event”:1.0:3.33:-0.5];
+...
+}</pre>
+<p> </p>
+</div>
+<p><br><a href="#top">Back to Top</a> </p>
+<hr>
+<p>
+
+<br><br>
+
+</p>
+<h1><a id="iden">Identity Linking</a></h1>
+
+<div>
+  
+<p>IdentityLink events provide the opportunity to "link different identities" together.  For example, you may have assigned each user of your app an internal userid which you want to connect to a user's service identifier.  Using the IdentityLink method, you can send both your internal id and their service identifier and connect them in the Kochava database.</p>
+<p>Kochava reports can be output to show additional identity information for devices in the Kochava database so that you can supplement your reports with internal identifiers that are useful to you and your application.</p>
+<p>Although you can call the identityLink method any time, it is best called just once per data pair being connected and it is your responsibility to know you have or have not made that connection.</p>
+<br>
+<pre rel="highlighter" code-brush="cpp"><p> 
+</p>
+- (void)someMethodInMyApp {
+    ...
+NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+        @”ABCD1234”, @”myInternalUserID”,
+        @”1234567890123456”, @”service_ID”,
+        nil];
+ 
+    MyAppDelegate *delegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    [delegate.kochavaTracker identityLinkEvent:dict];
+    ...
+}
+</pre>
+</div>
+
+
+<p><br><br><br><a href="#top">Back to Top</a> </p>
+<hr>
+<p><img src="http://api.stathat.com/c?ukey=NDI3NiCv-aschSWiiehSq19ub62I&amp;key=RRRK_WQNeuCzXF8Ns54x6CAxaE1B&amp;count=1" style="display: none;" width="1" height="1">
+<br><br>
+</p>
+<h1><a id="deep">Deep Linking</a></h1>
+
+<div>
+  
+<p>Pass deep link events to Kochava using this method.  After receiving the URI from your application via openURL:(NSURL *)url sourceApplication: in your application delegate, just pass the url and sourceApplication parameters to the sendDeepLink method.  You can learn more about deep linking for iOS <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplication_Class/index.html#//apple_ref/occ/instm/UIApplication/openURL:">here</a>.</p>
+<br>
+<p>Note that you will also need to register your URL scheme.  Information can be found here: <a href="https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Inter-AppCommunication/Inter-AppCommunication.html">https://developer.apple.com/library/ios/documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/Inter-AppCommunication/Inter-AppCommunication.html</a>.</p>
+<br>
+<pre rel="highlighter" code-brush="cpp">-	(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+
+
+
+
+[kochavaTracker sendDeepLink:url:sourceApplication];
+</pre>
+</div>
+<p><br><br><br><a href="#top">Back to Top</a> </p>
+<hr>
+<p><img src="http://api.stathat.com/c?ukey=NDI3NiCv-aschSWiiehSq19ub62I&amp;key=RRRK_WQNeuCzXF8Ns54x6CAxaE1B&amp;count=1" style="display: none;" width="1" height="1">
+<br><br>
+
+</p>
+<h1><a id="attr">Attribution Data Request (Onboarding Links)</a></h1>
+<div>
+  
+<p>Attribution data can be received from Kochava server, usually in less than 10 seconds from the initial application launch.  You can receive attribution by a delegate to your host app, by asking for the attribution data at any point, or both.
+You MUST request attribution data from the server when you initialize the library for either of these approaches to work.
+</p>
+<br>
+<p>If you wish to receive attribution via a delegate, make sure you set the kochavaTracker.trackerDelegate after initializing the library.</p>
+<br>
+<pre rel="highlighter" code-brush="cpp">NSDictionary *initDict = [NSDictionary dictionaryWithObjectsAndKeys:
+          @"myKochavaAppId", @"kochavaAppId",
+          @"0", @"enableLogging",          // optional - 0 is default
+          @"1", @"retrieveAttribution",
+          
+          nil];
+
+
+
+
+kochavaTracker = [[KochavaTracker alloc] initKochavaWithParams:initDict];
+kochavaTracker.trackerDelegate = self;
+</pre>
+<br>
+<p>To receive attribution data via a callback, add the following handler to your application:</p>
+<br>
+<pre rel="highlighter" code-brush="cpp">- (void) Kochava_attributionResult:(NSDictionary *)attributionResult
+{
+… do what you want with attributionResult
+}
+
+
+
+
+</pre>
+<br>
+<p>If you want to ask what attribution data has been retrieved from the server, at any time you can call the getAttributionData method.</p>
+<br>
+<pre rel="highlighter" code-brush="cpp">- (void)someMethodInMyApp { 
+      MyAppDelegate *delegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+NSDictionary *attributionResult = [delegate.kochavaTracker 
+retrieveAttribution];
+}
+</pre>
+<div><br></div>
+<div>
+<p>Sample Payload:<br></p>
+<p>
+</p>
+<p> </p>
+<pre rel="highlighter" code-brush="html">{"network":"KochavaTestVPPN_11_4","network_id":"1484","campaign":"SDK Testing","tier":"","tracker":"Tracker 3860a","tracker_id":"kospeedyiostest4743213e08eeu4a8cb8b1107e4f6dc ","site":"1","country":"USA","timestamp":1426525910,"date":"2015-03-16 17:11:50","ko_click_id":"ko_a13c55070ebf7174b","user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53","click":{"meta":{"control_server":"172.18.95.75","original_request":"campaign_id=kospeedyiostest4743213e08eeu4a8cb8b1107e4f6dc&amp;network_id=1484&amp;device_id=device_id&amp;site_id=1&amp;ko_click_id=ko_a13c55070ebf7174b&amp;in_time=1426525887&amp;inboarder=d4","origination_ip":"84.175.168.54"},"id":42,"deeplink":"","date":"2015-03-16 17:11:27"},"install":{"meta":{"device":"iPhone-iOS-7.1.2","control_server":"172.18.95.78","matched_by":"fingerprint","in_time":"1426525910","inboarder":"d3","debug":"1","alt_device_id":"a:0:{}","device_id":"DE5DCF67-116A-450A-E5A3-117A36341FA6","device_id_type":"idfa","origination_ip":"84.175.168.54","device_limit_tracking":"1","app_limit_tracking":"0","device_ver":"iPhone-iOS-7.1.2","affinity_group":"[{\"app_name\":\"MobileMail.app\\/MobileMail\",\"mtime\":\"1412959477\"},{\"app_name\":\"MobileSafari.app\\/MobileSafari\",\"mtime\":\"1412959477\"},{\"app_name\":\"bardunity.app\\/bardunity\",\"mtime\":\"1426525900\"}]","advertiser_tracking_enabled":"0","application_tracking_enabled":"1"},"id":124}}</pre>
+<p> </p>
+<p>With either approach, an NSDictionary will contain the attribution data.<br></p>
+</div>
+<br>
+<p>Possible return values for the attribution NSDictionary:</p>
+<li>nil - Either you didn’t indicate when you initialized that you would like to retrieve attribution, or attribution hasn’t yet been determined.  Kochava attempts to determine attribution within the first several seconds after the application has been run the first time.</li>
+<li>Contains a single key/value pair with attribution = false - represents an organic install.</li>
+<li>Contains a NSDictionary with a variety of attribution information - indicate attribution was made and contains the details of that attribution.</li>
+<br>
+<p>The delegate approach will not return until attribution has been determined and will not return a nil.</p>
+</div>
+<p><br><br><br><a href="#top">Back to Top</a> </p>
+<hr>
+<p><img src="http://api.stathat.com/c?ukey=NDI3NiCv-aschSWiiehSq19ub62I&amp;key=RRRK_WQNeuCzXF8Ns54x6CAxaE1B&amp;count=1" style="display: none;" width="1" height="1">
+<br><br>
+</p>
+<h1><a id="ibeac">iBeacon Detection (optional)</a></h1>
+<div>
+  
+<p>Use of location services by the Kochava SDK is optional and is enabled by turning on iBeacons on your Kochava dashboard.  Just click Edit and then expand the Advanced section.  Then enable by setting the iBeacon swtich to On.  This will cause your app to request the user approve the use of location services when the Kochava SDK is initialized.  To prevent the SDK from requesting approval for location services, make sure this switch is set to Off (default).</p>
+  
+<p>The Kochava SDK integrates with your Kochava dashboard by detecting iBeacons near the device running your application and reporting iBeacon boundary entries and exits to both your application and Kochava servers.
+</p>
+<br>
+<p>While populating what iBeacons to listen for happens on your Kochava dashboard, there are a couple things you need to do in your application.</p>
+<br>
+<p>1. Make sure your application has Location Updates enabled in background mode under Capabilities.</p>
+<p><br></p>
+<p><img src="http://cdn.freshdesk.com/data/helpdesk/attachments/production/1010185013/original/_docpic.jpg?1414415722" class="inline-image" data-id="1010185013" style="cursor: default;"></p>
+<br>
+<p>iOS 8 additionally requires the user be prompted to approve that the device can access your location, even when you are not using the app.  You should provide a description for the user why the application needs this access in the application’s plist file.</p>
+<br>
+<img src="http://s28.postimg.org/s4kcwki3x/i_Beacon2.png" style="cursor: default;">
+<p>Once approved for location access, the device will sync with Kochava servers in the most battery efficient method possible to monitor for nearby iBeacons.</p>
+<br>
+<p>When the device either enters or exits an iBeacon boundary, it will report that event to Kochava servers, and notify your application, via a delegate, if you have implemented one.</p>
+<br>
+<p>To implement the delegate:</p>
+<br>
+<p>1. Make sure you set the trackerDelegate after initializing the library.</p>
+<br>
+<pre rel="highlighter" code-brush="cpp">NSDictionary *initDict = [NSDictionary dictionaryWithObjectsAndKeys:
+          @"myKochavaAppId", @"kochavaAppId",
+          @"0", @"enableLogging",          // optional - 0 is default
+          @"1", @"retrieveAttribution",
+          
+          nil];
+kochavaTracker = [[KochavaTracker alloc] initKochavaWithParams:initDict];
+kochavaTracker.trackerDelegate = self;
+</pre>
+<br>
+<p>2. Add the delegate code.</p>
+<br>
+<pre rel="highlighter" code-brush="cpp">- (void) Kochava_iBeaconBarrierCrossed:(NSDictionary*)iBeaconBarrierAction
+{
+}
+</pre>
+<br>
+<p>The delegate will receive a NSDictionary with the following keys:</p>
+<br>
+<p>region - a CLBeaconRegion object representing the monitored iBeacon region.  From the components of the CLBeaconRegion you can extract the identifier (name), uuid, major and minor of your iBeacon.  These are the values the SDK obtain from your Kochava dashboard.</p>
+<br>
+<p>state - “inside” or “outside”, indicating if the device is inside or outside the iBeacon boundary.</p>
+<br>
+<p>Here’s an example of a NSDictionary which might be returned via this delegate.</p>
+<pre rel="highlighter" code-brush="cpp">{
+    region = "CLBeaconRegion (identifier:'Demo beacon', uuid:&lt;__NSConcreteUUID 0x174230d60&gt; 2xxxxxxx-CF6D-4A0F-ADF2-F4911BA9FFA6, major:3, minor:(null))";
+    state = inside;
+}
+</pre>
+<br><p><br>  <a href="#top" style="font-size: 13px;">Back to Top</a> </p>
+<hr>
+<br><p></p>
+<h1><a id="swift">Swift Support</a></h1>
+
+<div>
+  
+<p>The Kochava iOS SDK supports the Swift programming language through “Swift Bridging”.  Xcode will prompt you to configure an Objective-C bridging header when you add the Kochava library files to your project.  Alternatively, you can add the bridging header manually.
+</p>
+<p>Information on Objective-C / Swift bridging can be found here: <a href="https://developer.apple.com/library/ios/documentation/swift/conceptual/buildingcocoaapps/MixandMatch.html">https://developer.apple.com/library/ios/documentation/swift/conceptual/buildingcocoaapps/MixandMatch.html</a>.</p>
+<br>
+<p>At the top of your AppDelegate, make sure the following line exists before any class prototypes:</p>
+<pre rel="highlighter" code-brush="cpp">var bridgeForKochava: KochavaTracker = KochavaTracker()
+</pre>
+<br>
+<p>After adding the Kochava files to your Swift project and establishing the bridging header, you can access Kochava iOS library functions using the Kochava library Swift methods:</p>
+<pre rel="highlighter" code-brush="cpp">- (KochavaTracker*) swiftInitKochavaWithParams:(id)initDict;
+- (void) swiftEnableConsoleLogging:(bool)enableLogging;
+- (void) swiftTrackEvent:(id)eventTitle :(id)eventValue;
+- (void) swiftIdentityLinkEvent:(id)identityLinkData;
+- (void) swiftSpatialEvent:(id)eventTitle :(float)x :(float)y :(float)z;
+- (void) swiftSetLimitAdTracking:(bool)limitAdTracking;
+- (NSString*) swiftRetrieveAttribution;
+- (void) swiftSendDeepLink:(id)url :(id)sourceApplication;
+- (bool) swiftPresentInitAd;
+</pre>
+<br>
+<p>Note that at the time of this release, callbacks from Objective-C to Swift are not yet supported in the Kochava SDK.  This impacts any callbacks your application would receive from either retrieval of attribution from the server or any iBeacon boundary crossings.</p>
+<br>
+<p>These methods are used just like their Objective-C counterparts.  See the documentation above on specifics.  Here are a few examples you might use.</p>
+<br>
+<p>To initialize using Swift, in your AppDelegate class:</p>
+<pre rel="highlighter" code-brush="cpp">var kTracker: KochavaTracker
+var kochavaInitDict: Dictionary = [
+    "kochavaAppId": "—your Kochava App Id—",
+    "enableLogging":"1",
+    "retrieveAttribution":"1"]
+kTracker = bridgeForKochava.swiftInitKochavaWithParams(kochavaInitDict)
+var delegate: KochavaTrackerClientDelegate</pre>
+<p> </p>
+<p>Within any Swift file, you could call a post-install event as follows: </p>
+<pre rel="highlighter" code-brush="cpp">bridgeForKochava.swiftTrackEvent("some name", "some value")
+</pre>
+<p> </p>
+<p>To see what attribution was retrieved from Kochava servers, you could call the following:</p>
+<pre rel="highlighter" code-brush="cpp">let attribution:(NSString) = bridgeForKochava.swiftRetrieveAttribution()
+</pre>
+<br>
+<p>To pass an identity link to the server, you could call the following:</p>
+<pre rel="highlighter" code-brush="cpp">var idLink: Dictionary = ["ID1": "ID2"]
+bridgeForKochava.swiftIdentityLinkEvent(idLink)</pre>
+<br><br>
+<p><br>  <a href="#top" style="font-size: 13px;">Back to Top</a> </p>
+<p></p>
+<hr>
+
+<p></p>
+<p>You can download the SDK files below.  If you are using Cocoapods source the Cocoapods trunk and add 'Kochava' as a pod.</p>
+</div>
+</div>
+<p><br><br></p>
+<p align="center"><a class="kobtn" href="http://support.kochava.com/support/solutions/articles/1000160853-test-your-integration">Test Your Integration</a></p>
+<br>
+
+</body>
+</html>
